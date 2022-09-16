@@ -48,6 +48,13 @@ func (b *BaseStep) SetNext(s Step) {
 	b.Next.SetNext(s)
 }
 
+func (b BaseStep) Setup(c Car) Car {
+	if b.Next == nil {
+		return c
+	}
+	return b.Next.Setup(c)
+}
+
 type BodyStep struct {
 	BaseStep
 	bodyType string
@@ -74,10 +81,7 @@ type ABSStep struct {
 
 func (b ABSStep) Setup(c Car) Car {
 	c.abs = true
-	if b.Next == nil {
-		return c
-	}
-	return b.Next.Setup(c)
+	return b.BaseStep.Setup(c)
 }
 
 type GPSStep struct {
@@ -86,10 +90,7 @@ type GPSStep struct {
 
 func (b GPSStep) Setup(c Car) Car {
 	c.gpsNavigation = true
-	if b.Next == nil {
-		return c
-	}
-	return b.Next.Setup(c)
+	return b.BaseStep.Setup(c)
 }
 
 func main() {
