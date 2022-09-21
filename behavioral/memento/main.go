@@ -13,13 +13,6 @@ type Memento struct {
 	Move
 }
 
-func (s *Memento) FindLastMove() *Memento {
-	if s.Next == nil {
-		return s
-	}
-	return s.Next.FindLastMove()
-}
-
 func (s *Memento) FindAnyMove(i int) *Memento {
 	if s.No == i {
 		return s
