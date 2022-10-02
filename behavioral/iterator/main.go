@@ -14,7 +14,7 @@ type Iterator interface {
 	HasMore() bool
 }
 
-type IteratorCollection interface {
+type IterableCollection interface {
 	CreateIterator() Iterator
 }
 

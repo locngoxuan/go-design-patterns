@@ -12,28 +12,9 @@ type Car struct {
 	gpsNavigation bool
 }
 
-func (c Car) Info() string {
-	yesNo := func(b bool) string {
-		if b {
-			return "yes"
-		}
-		return "no"
-	}
-	return fmt.Sprintf("body type = %v, #seats = %v, abs = %v, gps = %v",
-		c.bodyType, c.seats, yesNo(c.abs), yesNo(c.gpsNavigation))
-}
-
 type Step interface {
 	SetNext(s Step)
 	Setup(Car) Car
-}
-
-func CreateCarKittingProcess(steps ...Step) Step {
-	first := steps[0]
-	for i := 1; i < len(steps); i++ {
-		first.SetNext(steps[i])
-	}
-	return first
 }
 
 type BaseStep struct {
@@ -93,25 +74,44 @@ func (b GPSStep) Setup(c Car) Car {
 	return b.BaseStep.Setup(c)
 }
 
+func CreateCarKittingProcess(steps ...Step) Step {
+	first := steps[0]
+	for i := 1; i < len(steps); i++ {
+		first.SetNext(steps[i])
+	}
+	return first
+}
+
+func Info(c Car) string {
+	yesNo := func(b bool) string {
+		if b {
+			return "yes"
+		}
+		return "no"
+	}
+	return fmt.Sprintf("body type = %v, #seats = %v, abs = %v, gps = %v",
+		c.bodyType, c.seats, yesNo(c.abs), yesNo(c.gpsNavigation))
+}
+
 func main() {
 	process := CreateCarKittingProcess(&BodyStep{
 		bodyType: "sedan",
 	}, &SeatStep{
 		seats: 4,
 	}, &ABSStep{}, &GPSStep{})
-	log.Printf("build a sedan car: %v", process.Setup(Car{}).Info())
+	log.Printf("build a sedan car: %v", Info(process.Setup(Car{})))
 
 	process = CreateCarKittingProcess(&BodyStep{
 		bodyType: "sedan",
 	}, &SeatStep{
 		seats: 4,
 	}, &ABSStep{})
-	log.Printf("build a sedan car without gps: %v", process.Setup(Car{}).Info())
+	log.Printf("build a sedan car without gps: %v", Info(process.Setup(Car{})))
 
 	process = CreateCarKittingProcess(&BodyStep{
 		bodyType: "SUV",
 	}, &SeatStep{
 		seats: 7,
 	}, &ABSStep{})
-	log.Printf("build a SUV car without gps: %v", process.Setup(Car{}).Info())
+	log.Printf("build a SUV car without gps: %v", Info(process.Setup(Car{})))
 }

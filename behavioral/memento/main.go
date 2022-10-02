@@ -13,18 +13,17 @@ type Memento struct {
 	Move
 }
 
-func (s *Memento) FindAnyMove(i int) *Memento {
+func (s *Memento) FindMove(i int) *Memento {
 	if s.No == i {
 		return s
 	}
-	return s.Next.FindAnyMove(i)
+	return s.Next.FindMove(i)
 }
 
 type Move struct {
-	XSrc int
-	YSrc int
-	XDst int
-	YDst int
+	ChessPiece string
+	Col        string
+	Row        string
 }
 
 type ScoreSheet struct {
@@ -33,7 +32,7 @@ type ScoreSheet struct {
 }
 
 func (s *ScoreSheet) AddMove(playerId int, m Move) {
-	lm := s.memento.FindAnyMove(s.CurrentMove)
+	lm := s.memento.FindMove(s.CurrentMove)
 	lm.Next = &Memento{
 		No:     lm.No + 1,
 		Next:   nil,
@@ -49,8 +48,8 @@ func (s ScoreSheet) Snapshot() string {
 	builder.WriteString("\n------- START -------")
 	builder.WriteString("\n")
 	for m.Next != nil && m.Next.No <= s.CurrentMove {
-		builder.WriteString(fmt.Sprintf("player: %v | from: x = %v, y = %v | to : x = %v, y = %v",
-			m.Next.Player, m.Next.XSrc, m.Next.YSrc, m.Next.XDst, m.Next.YDst))
+		builder.WriteString(fmt.Sprintf("player: %v | %v%v%v",
+			m.Next.Player, m.Next.ChessPiece, m.Next.Col, m.Next.Row))
 		builder.WriteString("\n")
 		m = m.Next
 	}
@@ -62,10 +61,22 @@ func (s *ScoreSheet) Undo() {
 	s.CurrentMove--
 }
 
+func (s *ScoreSheet) Redo() {
+	s.CurrentMove++
+}
+
 const (
-	Player int = 0
+	Player int = iota
 	Bot
 )
+
+func NewMove(chessPiece, col, row string) Move {
+	return Move{
+		ChessPiece: chessPiece,
+		Col:        col,
+		Row:        row,
+	}
+}
 
 func main() {
 	sheet := &ScoreSheet{
@@ -77,45 +88,19 @@ func main() {
 			Move:   Move{},
 		},
 	}
-	sheet.AddMove(Player, Move{
-		XSrc: 3,
-		YSrc: 1,
-		XDst: 3,
-		YDst: 2,
-	})
-	sheet.AddMove(Bot, Move{
-		XSrc: 3,
-		YSrc: 7,
-		XDst: 3,
-		YDst: 6,
-	})
-	sheet.AddMove(Player, Move{
-		XSrc: 4,
-		YSrc: 1,
-		XDst: 4,
-		YDst: 3,
-	})
-	sheet.AddMove(Bot, Move{
-		XSrc: 4,
-		YSrc: 7,
-		XDst: 4,
-		YDst: 6,
-	})
-	log.Printf("snapshot after 4 moves: %v", sheet.Snapshot())
+	sheet.AddMove(Player, NewMove("", "e", "4"))
+	sheet.AddMove(Bot, NewMove("", "e", "5"))
+	sheet.AddMove(Player, NewMove("", "d", "3"))
+	sheet.AddMove(Bot, NewMove("Q", "h", "4"))
+	log.Printf("latest snapshot: %v", sheet.Snapshot())
 	sheet.Undo()
 	sheet.Undo()
-	log.Printf("snapshot after 2 moves: %v", sheet.Snapshot())
-	sheet.AddMove(Player, Move{
-		XSrc: 4,
-		YSrc: 1,
-		XDst: 4,
-		YDst: 2,
-	})
-	sheet.AddMove(Bot, Move{
-		XSrc: 4,
-		YSrc: 7,
-		XDst: 4,
-		YDst: 5,
-	})
-	log.Printf("snapshot after 4 moves (2 new moves): %v", sheet.Snapshot())
+	log.Printf("latest snapshot: %v", sheet.Snapshot())
+	sheet.AddMove(Player, NewMove("", "g", "3"))
+	sheet.AddMove(Bot, NewMove("Q", "g", "5"))
+	log.Printf("latest snapshot: %v", sheet.Snapshot())
+	sheet.Undo()
+	sheet.Undo()
+	sheet.Redo()
+	log.Printf("latest snapshot: %v", sheet.Snapshot())
 }

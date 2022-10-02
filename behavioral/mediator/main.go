@@ -23,6 +23,7 @@ func (a *AmericanAirplane) Landing() {
 	log.Println("AmericanAirplane: Landed")
 	a.mediator.NotifyAboutLanding()
 }
+
 func (a *AmericanAirplane) PrepareForLanding() {
 	if !a.mediator.CanLanding(a) {
 		log.Println("AmericanAirplane ask for landing: Runway is blocked, waiting")
@@ -30,6 +31,7 @@ func (a *AmericanAirplane) PrepareForLanding() {
 	}
 	log.Println("AmericanAirplane ask for landing: accepted")
 }
+
 func (a *AmericanAirplane) PermitLanding() {
 	log.Println("AmericanAirplane receive notification: Runaway is clear")
 }
@@ -42,6 +44,7 @@ func (a *UnitedAirplane) Landing() {
 	log.Println("UnitedAirplane: Landed")
 	a.mediator.NotifyAboutLanding()
 }
+
 func (a *UnitedAirplane) PrepareForLanding() {
 	if !a.mediator.CanLanding(a) {
 		log.Println("UnitedAirplane ask for landing: Runway is blocked, waiting")
@@ -49,6 +52,7 @@ func (a *UnitedAirplane) PrepareForLanding() {
 	}
 	log.Println("UnitedAirplane ask for landing: accepted")
 }
+
 func (a *UnitedAirplane) PermitLanding() {
 	log.Println("UnitedAirplane receive notification: Runaway is clear")
 }
@@ -61,6 +65,7 @@ func (a *DeltaAirplane) Landing() {
 	log.Println("DeltaAirplane: Landed")
 	a.mediator.NotifyAboutLanding()
 }
+
 func (a *DeltaAirplane) PrepareForLanding() {
 	if !a.mediator.CanLanding(a) {
 		log.Println("DeltaAirplane ask for landing: Runway is blocked, waiting")
@@ -68,6 +73,7 @@ func (a *DeltaAirplane) PrepareForLanding() {
 	}
 	log.Println("DeltaAirplane ask for landing: accepted")
 }
+
 func (a *DeltaAirplane) PermitLanding() {
 	log.Println("DeltaAirplane receive notification: Runaway is clear")
 }
