@@ -12,36 +12,32 @@ type Car interface {
 	Model() string
 }
 
-func Info(car Car) string {
-	return fmt.Sprintf("brand = %v, body-type = %v, and model = %v", car.Brand(), car.BodyType(), car.Model())
-}
-
 type CarFactory interface {
 	MakeSUV() Car
 	MakeSedan() Car
 	MakeElectric() Car
 }
 
-type CommonCar struct {
+type BaseCar struct {
 	brand    string
 	bodyType string
 	model    string
 }
 
-func (s CommonCar) Brand() string {
+func (s BaseCar) Brand() string {
 	return s.brand
 }
 
-func (s CommonCar) BodyType() string {
+func (s BaseCar) BodyType() string {
 	return s.bodyType
 }
 
-func (s CommonCar) Model() string {
+func (s BaseCar) Model() string {
 	return s.model
 }
 
 type KiaCar struct {
-	CommonCar
+	BaseCar
 }
 
 func (s KiaCar) Brand() string {
@@ -49,7 +45,7 @@ func (s KiaCar) Brand() string {
 }
 
 type HyundaiCar struct {
-	CommonCar
+	BaseCar
 }
 
 func (s HyundaiCar) Brand() string {
@@ -60,7 +56,7 @@ type KiaCarFactory struct{}
 
 func (c KiaCarFactory) MakeSUV() Car {
 	return &KiaCar{
-		CommonCar: CommonCar{
+		BaseCar: BaseCar{
 			bodyType: "SUV",
 			model:    "Sorento",
 		},
@@ -68,7 +64,7 @@ func (c KiaCarFactory) MakeSUV() Car {
 }
 func (c KiaCarFactory) MakeSedan() Car {
 	return &KiaCar{
-		CommonCar: CommonCar{
+		BaseCar: BaseCar{
 			bodyType: "Sedan",
 			model:    "K5",
 		},
@@ -76,7 +72,7 @@ func (c KiaCarFactory) MakeSedan() Car {
 }
 func (c KiaCarFactory) MakeElectric() Car {
 	return &KiaCar{
-		CommonCar: CommonCar{
+		BaseCar: BaseCar{
 			bodyType: "Electric/Sedan",
 			model:    "EV6",
 		},
@@ -87,7 +83,7 @@ type HyundaiCarFactory struct{}
 
 func (c HyundaiCarFactory) MakeSUV() Car {
 	return &HyundaiCar{
-		CommonCar: CommonCar{
+		BaseCar: BaseCar{
 			bodyType: "SUV",
 			model:    "Palaside",
 		},
@@ -95,7 +91,7 @@ func (c HyundaiCarFactory) MakeSUV() Car {
 }
 func (c HyundaiCarFactory) MakeSedan() Car {
 	return &HyundaiCar{
-		CommonCar: CommonCar{
+		BaseCar: BaseCar{
 			bodyType: "Sedan",
 			model:    "Sonata",
 		},
@@ -103,7 +99,7 @@ func (c HyundaiCarFactory) MakeSedan() Car {
 }
 func (c HyundaiCarFactory) MakeElectric() Car {
 	return &HyundaiCar{
-		CommonCar: CommonCar{
+		BaseCar: BaseCar{
 			bodyType: "Electric/Sedan",
 			model:    "IONIQ",
 		},
@@ -120,14 +116,19 @@ func GetCarFactory(brand string) (CarFactory, error) {
 		return nil, fmt.Errorf("not found brand %s", brand)
 	}
 }
+
+func Info(car Car) string {
+	return fmt.Sprintf("brand = %v, body-type = %v, and model = %v", car.Brand(), car.BodyType(), car.Model())
+}
+
 func main() {
+	kia, _ := GetCarFactory("kia")
+	log.Printf("Make SUV car: %s", Info(kia.MakeSUV()))
+	log.Printf("Make Sedan car: %s", Info(kia.MakeSedan()))
+	log.Printf("Make Electric car: %s", Info(kia.MakeElectric()))
+
 	hyundai, _ := GetCarFactory("hyundai")
 	log.Printf("Make SUV car: %s", Info(hyundai.MakeSUV()))
 	log.Printf("Make Sedan car: %s", Info(hyundai.MakeSedan()))
 	log.Printf("Make Electric car: %s", Info(hyundai.MakeElectric()))
-
-	_, err := GetCarFactory("ferrari")
-	if err != nil {
-		log.Printf("faild to get car factory: %v", err)
-	}
 }

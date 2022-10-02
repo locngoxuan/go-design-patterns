@@ -23,23 +23,6 @@ type Car struct {
 	collisionAvoidance bool
 }
 
-func (c Car) Info() string {
-	getTransimssion := func(t Transmission) string {
-		if t == MANUAL {
-			return "manual"
-		}
-		return "auto"
-	}
-	trueFalse := func(b bool) string {
-		if b {
-			return "yes"
-		}
-		return "no"
-	}
-	return fmt.Sprintf("body type = %v, number of seats = %v, transimission = %v, gps = %v, abs = %v, moonroof = %v",
-		c.bodyType, c.seats, getTransimssion(c.transmission), trueFalse(c.gps), trueFalse(c.abs), trueFalse(c.moonroof))
-}
-
 type Builder interface {
 	SetBodyType()
 	SetSeats()
@@ -50,6 +33,20 @@ type Builder interface {
 	SetTouchSCreen()
 	SetCollisionAvoidance()
 	GetCar() Car
+}
+type Director struct {
+}
+
+func (d Director) MakeACar(builder Builder) Car {
+	builder.SetBodyType()
+	builder.SetSeats()
+	builder.SetMoonroof()
+	builder.SetABS()
+	builder.SetGPS()
+	builder.SetCollisionAvoidance()
+	builder.SetTouchSCreen()
+	builder.SetTransmission()
+	return builder.GetCar()
 }
 
 type CarBuilder struct {
@@ -134,19 +131,21 @@ func (s *MidLevelSUVBuilder) SetMoonroof() {
 	s.moonroof = true
 }
 
-type Director struct {
-}
-
-func (d Director) MakeACar(builder Builder) Car {
-	builder.SetBodyType()
-	builder.SetSeats()
-	builder.SetMoonroof()
-	builder.SetABS()
-	builder.SetGPS()
-	builder.SetCollisionAvoidance()
-	builder.SetTouchSCreen()
-	builder.SetTransmission()
-	return builder.GetCar()
+func (c Car) Info() string {
+	getTransimssion := func(t Transmission) string {
+		if t == MANUAL {
+			return "manual"
+		}
+		return "auto"
+	}
+	trueFalse := func(b bool) string {
+		if b {
+			return "yes"
+		}
+		return "no"
+	}
+	return fmt.Sprintf("body type = %v, number of seats = %v, transimission = %v, gps = %v, abs = %v, moonroof = %v",
+		c.bodyType, c.seats, getTransimssion(c.transmission), trueFalse(c.gps), trueFalse(c.abs), trueFalse(c.moonroof))
 }
 
 func main() {
