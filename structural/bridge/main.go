@@ -4,6 +4,10 @@ import (
 	"log"
 )
 
+type Shape interface {
+	SetColor(c Color)
+	Draw()
+}
 type Color interface {
 	GetColor() string
 }
@@ -20,11 +24,6 @@ type Blue struct {
 
 func (c Blue) GetColor() string {
 	return "blue"
-}
-
-type Shape interface {
-	SetColor(c Color)
-	Draw()
 }
 
 type CommonShape struct {
@@ -70,12 +69,14 @@ func main() {
 	rec.SetColor(Blue{})
 	rec.Draw()
 	log.Println("")
+
 	circle := Circle{}
 	circle.SetColor(Red{})
 	circle.Draw()
 	circle.SetColor(Blue{})
 	circle.Draw()
 	log.Println("")
+
 	square := Square{}
 	square.SetColor(Red{})
 	square.Draw()

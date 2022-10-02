@@ -22,36 +22,45 @@ func (p PointType) GetKey() string {
 	return fmt.Sprintf("%s%s", p.Char, p.Color)
 }
 
-var pointTypes = map[string]PointType{
-	"xred": {
-		Color: "red",
-		Char:  "x",
-	},
-	"xblue": {
-		Color: "blue",
-		Char:  "x",
-	},
-	"ored": {
-		Color: "red",
-		Char:  "o",
-	},
-	"oblue": {
-		Color: "blue",
-		Char:  "o",
-	},
+type PointTypeFactory struct {
+	pointTypes map[string]PointType
+}
+
+func (p *PointTypeFactory) getPointType(typ string) (PointType, error) {
+	v, ok := p.pointTypes[typ]
+	if ok {
+		return v, nil
+	}
+	switch typ {
+	case "xred":
+		v = PointType{
+			Color: "red",
+			Char:  "x",
+		}
+	case "ored":
+		v = PointType{
+			Color: "red",
+			Char:  "o",
+		}
+	case "xblue":
+		v = PointType{
+			Color: "blue",
+			Char:  "x",
+		}
+	case "oblue":
+		v = PointType{
+			Color: "blue",
+			Char:  "o",
+		}
+	default:
+		return v, fmt.Errorf("wrong point type passed")
+	}
+	p.pointTypes[typ] = v
+	return v, nil
 }
 
 type Board struct {
 	points map[int]map[int]Point
-}
-
-var r = rand.New(rand.NewSource(time.Now().UnixMilli()))
-
-func randomizePointType() PointType {
-	keys := []string{
-		"xred", "xblue", "ored", "oblue",
-	}
-	return pointTypes[keys[r.Intn(len(keys))]]
 }
 
 func (b *Board) AddPoint(x, y int) {
@@ -80,6 +89,22 @@ func (b Board) Info() map[string]int {
 		}
 	}
 	return count
+}
+
+// main
+var (
+	r                = rand.New(rand.NewSource(time.Now().UnixMilli()))
+	pointTypeFactory = &PointTypeFactory{
+		pointTypes: make(map[string]PointType),
+	}
+)
+
+func randomizePointType() PointType {
+	keys := []string{
+		"xred", "xblue", "ored", "oblue",
+	}
+	pointType, _ := pointTypeFactory.getPointType(keys[r.Intn(len(keys))])
+	return pointType
 }
 
 func main() {
