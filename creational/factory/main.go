@@ -6,10 +6,12 @@ import (
 	"strings"
 )
 
+// Car Interface
 type Car interface {
 	Brand() string
 }
 
+// Concrete Cars
 type Kia struct {
 }
 
@@ -24,6 +26,7 @@ func (c Hyundai) Brand() string {
 	return "Hyundai"
 }
 
+// Factory
 func GetACar(brand string) (Car, error) {
 	switch strings.ToLower(brand) {
 	case "kia":
@@ -35,6 +38,7 @@ func GetACar(brand string) (Car, error) {
 	}
 }
 
+// Main
 func main() {
 	kia, _ := GetACar("kia")
 	log.Printf("car of %s", kia.Brand())
