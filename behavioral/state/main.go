@@ -83,5 +83,4 @@ func main() {
 	c2.PressButtonForSelectingItem()
 	c2.InsertMoneyForPayment()
 	c2.Pickup()
-
 }

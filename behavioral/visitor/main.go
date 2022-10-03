@@ -21,9 +21,11 @@ type EmptyShape struct {
 func (d EmptyShape) Move(int, int) {
 	//move
 }
+
 func (d EmptyShape) Draw() {
 	//draw
 }
+
 func (d EmptyShape) Accept(v Visitor) string {
 	return ""
 }
@@ -107,6 +109,7 @@ func (x XMLExportVisitor) VisitDot(dot Dot) string {
 	<y>%v</y>
 </dot>`, dot.Id, dot.X, dot.Y)
 }
+
 func (x XMLExportVisitor) VisitCircle(c Circle) string {
 	return fmt.Sprintf(`<circle>
 	<id>%v</id>
@@ -115,6 +118,7 @@ func (x XMLExportVisitor) VisitCircle(c Circle) string {
 	<radius>%v</radius>
 </circle>`, c.Id, c.X, c.Y, c.Radius)
 }
+
 func (x XMLExportVisitor) VisitRectangle(r Rectangle) string {
 	return fmt.Sprintf(`<rectangle>
 	<id>%v</id>
@@ -124,6 +128,7 @@ func (x XMLExportVisitor) VisitRectangle(r Rectangle) string {
 	<height>%v</height>
 </rectangle>`, r.Id, r.X, r.Y, r.Width, r.Height)
 }
+
 func (x XMLExportVisitor) VisitCompoundGraphic(c CompoundShape) string {
 	var builder strings.Builder
 	builder.WriteString("<compound_graphic>")

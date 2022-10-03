@@ -70,8 +70,10 @@ func (s *EmailOtp) SendNotification(message string) error {
 	return nil
 }
 
-var r = rand.New(rand.NewSource(time.Now().UnixMilli()))
-var letterRunes = []rune("0123456789")
+var (
+	r           = rand.New(rand.NewSource(time.Now().UnixMilli()))
+	letterRunes = []rune("0123456789")
+)
 
 func RandStringRunes(n int) string {
 	b := make([]rune, n)
